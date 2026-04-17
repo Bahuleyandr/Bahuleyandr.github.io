@@ -1,0 +1,45 @@
+name: Regenerate Atom feed
+
+# Runs whenever posts change (or the feed builder itself changes).
+# Regenerates feed.xml and commits it back if it changed.
+# Skips when the commit was made by the bot itself (loop safety).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**'
+      - 'scripts/build-feed.mjs'
+      - '.github/workflows/build-feed.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-feed:
+    if: "!contains(github.event.head_commit.message, '[skip feed]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate feed.xml
+        run: node scripts/build-feed.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [[ -n "$(git status --porcelain feed.xml)" ]]; then
+            git add feed.xml
+            git commit -m "chore: regenerate feed.xml [skip feed]"
+            git push
+          else
+            echo "feed.xml unchanged — nothing to commit"
+          fi

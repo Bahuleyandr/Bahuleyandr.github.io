@@ -1,6 +1,6 @@
 /* ===================================
    BAHULEYAN.COM - Arcade
-   Snake, Breakout, 2048 + local leaderboard
+   Snake, Breakout, 2048 + local + optional global leaderboard
    =================================== */
 
 (function initArcade() {
@@ -14,6 +14,10 @@
     const gameHint = document.getElementById('gameHint');
     const tabs = document.querySelectorAll('.arcade-tab');
     const leaderboardList = document.getElementById('leaderboardList');
+    const leaderboardTitle = document.getElementById('leaderboardTitle');
+    const modeLocalBtn = document.getElementById('lbModeLocal');
+    const modeGlobalBtn = document.getElementById('lbModeGlobal');
+    const leaderboardNote = document.getElementById('leaderboardNote');
 
     if (!canvas || !tabs.length) return;
     const ctx = canvas.getContext('2d');
@@ -21,67 +25,172 @@
     const hue = () => (window.getThemeHue ? window.getThemeHue() : 270);
     const color = (l, a = 1) => `hsla(${hue()}, 75%, ${l}%, ${a})`;
 
-    // -------------------- Leaderboard --------------------
-    const Leaderboard = {
-        key(game) { return `bahuleyan_arcade_${game}`; },
-        load(game) {
+    // -------------------- Config --------------------
+    const API = (window.ARCADE_API || '').replace(/\/$/, '') || null;
+    let mode = API ? 'global' : 'local';
+
+    // -------------------- Leaderboard (local + optional global) --------------------
+    const esc = (s) => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+
+    const Local = {
+        key(g) { return `bahuleyan_arcade_${g}`; },
+        load(g) {
             try {
-                const raw = localStorage.getItem(this.key(game));
+                const raw = localStorage.getItem(this.key(g));
                 return raw ? JSON.parse(raw) : [];
             } catch (_) { return []; }
         },
-        save(game, entries) {
-            try { localStorage.setItem(this.key(game), JSON.stringify(entries)); } catch (_) {}
+        save(g, entries) {
+            try { localStorage.setItem(this.key(g), JSON.stringify(entries.slice(0, 10))); } catch (_) {}
         },
-        best(game) {
-            const entries = this.load(game);
-            return entries.length ? entries[0].score : 0;
+        best(g) {
+            const arr = this.load(g);
+            return arr.length ? arr[0].score : 0;
         },
-        qualifies(game, score) {
+        add(g, entry) {
+            const arr = this.load(g);
+            arr.push(entry);
+            arr.sort((a, b) => b.score - a.score);
+            this.save(g, arr);
+        },
+        qualifies(g, score) {
             if (score <= 0) return false;
-            const entries = this.load(game);
-            if (entries.length < 10) return true;
-            return score > entries[entries.length - 1].score;
-        },
-        submit(game, score, name) {
-            const entries = this.load(game);
-            entries.push({
-                name: (name || 'Anon').slice(0, 12),
-                score,
-                date: new Date().toISOString().slice(0, 10)
-            });
-            entries.sort((a, b) => b.score - a.score);
-            this.save(game, entries.slice(0, 10));
-        },
-        render(game) {
-            if (!leaderboardList) return;
-            const entries = this.load(game);
-            if (!entries.length) {
-                leaderboardList.innerHTML = '<li class="leaderboard-empty">No scores yet — play a round.</li>';
-                return;
-            }
-            leaderboardList.innerHTML = entries.map((e, i) => `
-                <li class="leaderboard-entry${i === 0 ? ' is-top' : ''}">
-                    <span class="lb-rank">${i + 1}</span>
-                    <span class="lb-name">${(e.name || 'Anon').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</span>
-                    <span class="lb-score">${e.score.toLocaleString()}</span>
-                </li>
-            `).join('');
+            const arr = this.load(g);
+            if (arr.length < 10) return true;
+            return score > arr[arr.length - 1].score;
         }
     };
 
-    function tryRecordScore(game, score) {
-        if (score <= 0) return;
-        if (Leaderboard.qualifies(game, score)) {
-            const name = (prompt(`New top score: ${score}! Your name?`, 'Anon') || 'Anon').trim();
-            Leaderboard.submit(game, score, name || 'Anon');
-            Leaderboard.render(game);
+    const Global = {
+        cache: {},
+        best(g) {
+            const cached = this.cache[g];
+            return (cached && cached.scores && cached.scores[0]) ? cached.scores[0].score : 0;
+        },
+        async fetchTop(g) {
+            if (!API) return [];
+            try {
+                const res = await fetch(`${API}/scores/${g}`, { cache: 'no-cache' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                this.cache[g] = { scores: data.scores || [], fetchedAt: Date.now() };
+                return this.cache[g].scores;
+            } catch (e) {
+                console.warn('[arcade] global fetch failed:', e.message);
+                return null; // null = couldn't fetch (different from "empty")
+            }
+        },
+        async submit(g, score, name) {
+            if (!API) return null;
+            try {
+                const res = await fetch(`${API}/scores/${g}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, score })
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                this.cache[g] = { scores: data.scores || [], fetchedAt: Date.now() };
+                return data;
+            } catch (e) {
+                console.warn('[arcade] global submit failed:', e.message);
+                return null;
+            }
         }
-        if (highScoreEl) highScoreEl.textContent = Leaderboard.best(game);
+    };
+
+    function renderEntries(entries, opts = {}) {
+        if (!leaderboardList) return;
+        if (opts.unreachable) {
+            leaderboardList.innerHTML = '<li class="leaderboard-empty">Offline — showing local only.</li>';
+            return;
+        }
+        if (!entries || !entries.length) {
+            leaderboardList.innerHTML = '<li class="leaderboard-empty">No scores yet — play a round.</li>';
+            return;
+        }
+        leaderboardList.innerHTML = entries.map((e, i) => `
+            <li class="leaderboard-entry${i === 0 ? ' is-top' : ''}">
+                <span class="lb-rank">${i + 1}</span>
+                <span class="lb-name">${esc(e.name || 'Anon')}</span>
+                <span class="lb-score">${(e.score || 0).toLocaleString()}</span>
+            </li>
+        `).join('');
+    }
+
+    async function renderBoard(game) {
+        if (!leaderboardList) return;
+        if (leaderboardTitle) leaderboardTitle.textContent = mode === 'global' ? 'Global Top 10' : 'Local Top 10';
+        if (leaderboardNote) {
+            leaderboardNote.textContent = mode === 'global'
+                ? 'Shared with everyone who plays.'
+                : 'Saved in your browser only.';
+        }
+        if (mode === 'global') {
+            // show cached or loading
+            if (Global.cache[game]) {
+                renderEntries(Global.cache[game].scores);
+            } else {
+                renderEntries([], {});
+                leaderboardList.innerHTML = '<li class="leaderboard-empty leaderboard-loading">Loading…</li>';
+            }
+            const fresh = await Global.fetchTop(game);
+            if (fresh === null) renderEntries(null, { unreachable: true });
+            else renderEntries(fresh);
+        } else {
+            renderEntries(Local.load(game));
+        }
+        updateBest(game);
     }
 
     function updateBest(game) {
-        if (highScoreEl) highScoreEl.textContent = Leaderboard.best(game);
+        if (!highScoreEl) return;
+        const localBest = Local.best(game);
+        const globalBest = mode === 'global' ? Global.best(game) : 0;
+        // Always show the user's personal best — global top is already visible in the board
+        highScoreEl.textContent = Math.max(localBest, globalBest).toLocaleString();
+    }
+
+    async function handleScore(game, score) {
+        if (score <= 0) { updateBest(game); return; }
+
+        const localQualifies = Local.qualifies(game, score);
+        let name = null;
+
+        if (localQualifies) {
+            name = (prompt(`New best: ${score.toLocaleString()}! Your name?`, 'Anon') || 'Anon').trim().slice(0, 12) || 'Anon';
+            Local.add(game, { name, score, date: new Date().toISOString().slice(0, 10) });
+        }
+
+        if (API) {
+            // Submit to global if we have a name (either just prompted, or reuse last-used)
+            if (!name) name = (localStorage.getItem('bahuleyan_arcade_name') || 'Anon').slice(0, 12);
+            if (name) {
+                localStorage.setItem('bahuleyan_arcade_name', name);
+                await Global.submit(game, score, name);
+            }
+        }
+
+        await renderBoard(game);
+    }
+
+    function bindModeToggle() {
+        if (!modeLocalBtn || !modeGlobalBtn) return;
+        if (!API) {
+            modeGlobalBtn.setAttribute('disabled', '');
+            modeGlobalBtn.title = 'Global leaderboard not configured';
+        }
+        const setMode = (m) => {
+            mode = m;
+            modeLocalBtn.classList.toggle('active', m === 'local');
+            modeGlobalBtn.classList.toggle('active', m === 'global');
+            renderBoard(current);
+        };
+        modeLocalBtn.addEventListener('click', () => setMode('local'));
+        modeGlobalBtn.addEventListener('click', () => { if (API) setMode('global'); });
+        // Reflect initial state
+        modeLocalBtn.classList.toggle('active', mode === 'local');
+        modeGlobalBtn.classList.toggle('active', mode === 'global');
     }
 
     // -------------------- Shared helpers --------------------
@@ -90,15 +199,9 @@
         overlay.classList.remove('hidden');
         if (overlayText) overlayText.textContent = text;
     }
-    function hideOverlay() {
-        if (overlay) overlay.classList.add('hidden');
-    }
-    function setHint(html) {
-        if (gameHint) gameHint.innerHTML = html;
-    }
-    function setScore(v) {
-        if (scoreEl) scoreEl.textContent = v.toLocaleString();
-    }
+    function hideOverlay() { if (overlay) overlay.classList.add('hidden'); }
+    function setHint(html) { if (gameHint) gameHint.innerHTML = html; }
+    function setScore(v) { if (scoreEl) scoreEl.textContent = v.toLocaleString(); }
     function showCanvas() {
         canvas.style.display = 'block';
         if (gameDom) gameDom.hidden = true;
@@ -221,7 +324,7 @@
             clearInterval(loop); loop = null;
             showOverlay(`Game Over — ${score}`);
             if (gameButton) gameButton.textContent = 'Play Again';
-            tryRecordScore('snake', score);
+            handleScore('snake', score);
         }
         function start() {
             if (running) return;
@@ -240,8 +343,7 @@
         function enter() {
             showCanvas();
             setHint('Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to move.');
-            updateBest('snake');
-            Leaderboard.render('snake');
+            renderBoard('snake');
             reset();
             draw();
             showOverlay('Press Start to Play');
@@ -266,7 +368,7 @@
         const ballR = 6;
         const brickRows = 5, brickCols = 10, brickH = 18, brickPad = 4;
         let paddleX, ballX, ballY, ballVX, ballVY, bricks, score, lives;
-        let raf = null, running = false, keyHandler = null, paused = false;
+        let raf = null, running = false, keyHandler = null;
         const keys = { left: false, right: false };
 
         function reset() {
@@ -294,7 +396,6 @@
             ctx.fillStyle = 'rgba(10, 10, 20, 0.95)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // bricks
             bricks.forEach(b => {
                 if (!b.alive) return;
                 const l = 65 - b.row * 5;
@@ -305,7 +406,6 @@
                 ctx.shadowBlur = 0;
             });
 
-            // paddle
             const pg = ctx.createLinearGradient(paddleX, 0, paddleX + paddleW, 0);
             pg.addColorStop(0, color(40));
             pg.addColorStop(0.5, color(65));
@@ -316,7 +416,6 @@
             ctx.fillRect(paddleX, canvas.height - 24, paddleW, paddleH);
             ctx.shadowBlur = 0;
 
-            // ball
             ctx.beginPath();
             ctx.arc(ballX, ballY, ballR, 0, Math.PI * 2);
             ctx.fillStyle = color(75);
@@ -325,25 +424,21 @@
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            // lives
             ctx.fillStyle = color(75);
             ctx.font = '12px "JetBrains Mono", monospace';
             ctx.fillText('♥'.repeat(lives), 8, 18);
         }
 
         function step() {
-            // paddle
             if (keys.left) paddleX -= 6;
             if (keys.right) paddleX += 6;
             paddleX = Math.max(0, Math.min(canvas.width - paddleW, paddleX));
 
-            // ball
             ballX += ballVX; ballY += ballVY;
 
             if (ballX - ballR < 0 || ballX + ballR > canvas.width) ballVX = -ballVX;
             if (ballY - ballR < 0) ballVY = -ballVY;
 
-            // paddle collision
             if (ballY + ballR > canvas.height - 24 && ballY + ballR < canvas.height - 14 &&
                 ballX > paddleX && ballX < paddleX + paddleW && ballVY > 0) {
                 ballVY = -Math.abs(ballVY);
@@ -351,7 +446,6 @@
                 ballVX = hit * 4.5;
             }
 
-            // brick collision
             for (const b of bricks) {
                 if (!b.alive) continue;
                 if (ballX > b.x && ballX < b.x + b.w && ballY > b.y && ballY < b.y + b.h) {
@@ -363,7 +457,6 @@
                 }
             }
 
-            // lose life
             if (ballY - ballR > canvas.height) {
                 lives--;
                 if (lives <= 0) return end();
@@ -371,7 +464,6 @@
                 ballVX = 3 * (Math.random() < 0.5 ? -1 : 1); ballVY = -3.2;
             }
 
-            // win
             if (bricks.every(b => !b.alive)) {
                 score += 200; setScore(score);
                 reset();
@@ -386,7 +478,7 @@
             if (raf) { cancelAnimationFrame(raf); raf = null; }
             showOverlay(`Game Over — ${score}`);
             if (gameButton) gameButton.textContent = 'Play Again';
-            tryRecordScore('breakout', score);
+            handleScore('breakout', score);
         }
 
         function start() {
@@ -408,8 +500,7 @@
         function enter() {
             showCanvas();
             setHint('Use <kbd>A</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&rarr;</kbd> to move the paddle.');
-            updateBest('breakout');
-            Leaderboard.render('breakout');
+            renderBoard('breakout');
             reset();
             draw();
             showOverlay('Press Start to Play');
@@ -488,7 +579,7 @@
                     running = false;
                     showOverlay(`Game Over — ${score}`);
                     if (gameButton) gameButton.textContent = 'Play Again';
-                    tryRecordScore('2048', score);
+                    handleScore('2048', score);
                 }
             }
         }
@@ -503,7 +594,6 @@
         }
         function tileStyle(v) {
             if (!v) return '';
-            // lightness decreases as value grows, pulling the tile deeper into the theme color
             const step = Math.min(11, Math.log2(v));
             const l = 75 - step * 4;
             return `background: hsl(${hue()}, 75%, ${l}%); color: ${l > 50 ? '#0a0a0f' : '#fff'};`;
@@ -532,8 +622,7 @@
         function enter() {
             showDom();
             setHint('<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to slide. Merge matching tiles.');
-            updateBest('2048');
-            Leaderboard.render('2048');
+            renderBoard('2048');
             reset();
             showOverlay('Press Start to Play');
             if (gameButton) gameButton.textContent = 'Start Game';
@@ -579,6 +668,8 @@
         });
     }
 
-    // Initial boot — enter snake
+    bindModeToggle();
+
+    // Initial boot
     Snake.enter();
 })();

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Bahuleyan — Journal</title>
+    <subtitle>Musings on games, code, and the in-between.</subtitle>
+    <link rel="alternate" type="text/html" href="https://bahuleyan.com/journal.html"/>
+    <link rel="self" type="application/atom+xml" href="https://bahuleyan.com/feed.xml"/>
+    <id>https://bahuleyan.com/</id>
+    <updated>2026-04-17T00:00:00.000Z</updated>
+    <author><name>Bahuleyan</name></author>
+    <rights>© 2026 Bahuleyan</rights>
+    <entry>
+        <title>Welcome to the Journal</title>
+        <link rel="alternate" type="text/html" href="https://bahuleyan.com/journal.html?post=welcome-to-the-journal"/>
+        <id>https://bahuleyan.com/journal.html?post=welcome-to-the-journal</id>
+        <updated>2026-04-17T00:00:00.000Z</updated>
+        <published>2026-04-17T00:00:00.000Z</published>
+        <summary>First entry — what this space is for, and what you can expect.</summary>
+        <author><name>Bahuleyan</name></author>
+        <category term="meta"/>
+        <category term="intro"/>
+        <content type="text"># Welcome to the Journal
+
+This is the first entry. I built this space so I&apos;d have somewhere to put the thoughts that don&apos;t fit in a tweet — longer takes on games I&apos;m playing, projects I&apos;m building, and the occasional tangent.
+
+## What to expect
+
+- **Game musings** — deep dives on games that stick with me after I put the controller down
+- **Build logs** — what I&apos;m shipping, what broke, what I learned
+- **Random tangents** — because sometimes a thought needs more than 280 characters
+
+Posts will be periodic, not scheduled. If something&apos;s worth writing about, it lands here.
+
+## How this works
+
+Each entry is a markdown file in the `posts/` folder, listed in `posts.json`. Dead simple, fully portable, works even if the internet forgets me.
+
+See you in the next one.
+
+— **B**
+</content>
+    </entry>
+    <entry>
+        <title>Why Ghost of Tsushima Still Lives in My Head</title>
+        <link rel="alternate" type="text/html" href="https://bahuleyan.com/journal.html?post=ghost-of-tsushima-thoughts"/>
+        <id>https://bahuleyan.com/journal.html?post=ghost-of-tsushima-thoughts</id>
+        <updated>2026-04-10T00:00:00.000Z</updated>
+        <published>2026-04-10T00:00:00.000Z</published>
+        <summary>On wind-guided paths, the quiet duel, and why this game redefined atmosphere for me.</summary>
+        <author><name>Bahuleyan</name></author>
+        <category term="gaming"/>
+        <category term="musings"/>
+        <content type="text"># Why Ghost of Tsushima Still Lives in My Head
+
+Most open-world games hand you a minimap and a trail of waypoints and call it a day. Ghost of Tsushima handed me a **wind**.
+
+That&apos;s such a small design decision on paper — replace the HUD arrow with a gust of leaves — but it changes everything. You stop staring at a compass. You start staring at the island. You notice the shrine on the ridge because the wind bent toward it, not because a yellow marker yelled at you.
+
+## The duel that broke me
+
+The standoff mechanic — one strike, one move, the whole fight decided in a heartbeat — is the most confident design choice I&apos;ve seen in a samurai game. It&apos;s not mechanically deep. It doesn&apos;t need to be. It asks you to *feel* the moment instead of mashing through it.
+
+That&apos;s the whole game, really. Atmosphere over mechanics. Restraint over spectacle. A bamboo grove over a skill tree.
+
+## What I took away
+
+I think about Tsushima every time I&apos;m about to clutter a UI. Every time I&apos;m tempted to add one more notification, one more popup, one more *tell me where to go*. Sometimes the best feedback you can give someone is **a gust of wind**.
+
+— **B**
+</content>
+    </entry>
+</feed>

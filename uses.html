@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What Bahuleyan uses — gear, software, services, and the homelab stack.">
+    <meta name="author" content="Bahuleyan">
+    <meta name="theme-color" content="#9f46e4">
+
+    <meta property="og:title" content="Uses | BAHULEYAN">
+    <meta property="og:description" content="Gear, software, and homelab stack.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="logo.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@BahuleyanX">
+    <meta name="twitter:creator" content="@BahuleyanX">
+    <meta name="twitter:title" content="Uses | BAHULEYAN">
+    <meta name="twitter:description" content="Gear, software, and homelab stack.">
+    <meta name="twitter:image" content="logo.png">
+
+    <title>Uses | BAHULEYAN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Bahuleyan — Journal" href="/feed.xml">
+</head>
+<body class="journal-body">
+    <canvas id="particleCanvas"></canvas>
+
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+        <a href="index.html" class="nav-brand" aria-label="Bahuleyan home">
+            <img src="favicon.png" alt="" class="nav-icon">
+            <span>BAHULEYAN</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#now">Now</a></li>
+            <li><a href="index.html#games">Games</a></li>
+            <li><a href="index.html#projects">Projects</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="uses.html" class="active">Uses</a></li>
+            <li><a href="index.html#connect">Connect</a></li>
+        </ul>
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <main class="journal-main">
+        <header class="journal-header">
+            <h1 class="journal-title">Uses</h1>
+            <p class="journal-lede">Gear, software, and the homelab stack. Not a sponsored list — just what I actually reach for.</p>
+        </header>
+
+        <section class="uses-section">
+            <h2 class="uses-heading"><i class="fas fa-desktop"></i> Editor &amp; CLI</h2>
+            <ul class="uses-list">
+                <li><strong>VS Code</strong> — daily driver for everything that isn't a one-off script</li>
+                <li><strong>Claude Code</strong> — AI pair-programming, surprisingly load-bearing in my workflow</li>
+                <li><strong>Git Bash</strong> — Unix-ish shell on Windows that doesn't get in the way</li>
+                <li><strong>GitHub CLI (<code>gh</code>)</strong> — PRs, issues, API pokes without leaving the terminal</li>
+            </ul>
+        </section>
+
+        <section class="uses-section">
+            <h2 class="uses-heading"><i class="fas fa-server"></i> Homelab</h2>
+            <ul class="uses-list">
+                <li><strong>Raspberry Pi 5</strong> (aka <code>deltaquadrant</code>) — runs the homelab; Debian Bookworm, aarch64</li>
+                <li><strong>Dokploy + Traefik</strong> — self-hosted PaaS with reverse proxy for the containerized services</li>
+                <li><strong>Cloudflare Tunnel</strong> — exposes Pi services without opening ports on my router</li>
+                <li><strong>Tailscale</strong> — mesh VPN for private-side access when I'm away from home</li>
+                <li><strong>Jellyfin</strong> — media streaming for the stuff I already own</li>
+                <li><strong>Vaultwarden</strong> — Bitwarden-compatible password vault, self-hosted</li>
+                <li><strong>Joplin Server</strong> — sync for my notes across devices</li>
+                <li><strong>n8n</strong> — automation workflows that glue everything together</li>
+                <li><strong>Wallos</strong> — subscription tracker so nothing renews behind my back</li>
+            </ul>
+        </section>
+
+        <section class="uses-section">
+            <h2 class="uses-heading"><i class="fas fa-code"></i> Stack for this site</h2>
+            <ul class="uses-list">
+                <li><strong>Plain HTML/CSS/JS</strong> — no build step, no framework, no regrets</li>
+                <li><strong>GitHub Pages</strong> — hosting, free, auto-deploys on push to main</li>
+                <li><strong>Cloudflare DNS + Redirect Rules</strong> — points the domain, redirects the typo</li>
+                <li><strong>Cloudflare Workers + KV</strong> — backs the arcade's global leaderboard</li>
+                <li><strong>marked.js</strong> — markdown → HTML for journal entries</li>
+            </ul>
+        </section>
+
+        <section class="uses-section">
+            <h2 class="uses-heading"><i class="fas fa-gamepad"></i> Gaming</h2>
+            <ul class="uses-list">
+                <li><strong>PC</strong> — where most games happen these days</li>
+                <li><strong>PS5</strong> — exclusives and couch gaming</li>
+                <li><strong>Steam</strong> — library, backlog, wishlist of shame</li>
+            </ul>
+        </section>
+
+        <section class="uses-section">
+            <h2 class="uses-heading"><i class="fas fa-question-circle"></i> Missing something?</h2>
+            <p class="uses-fallback">I'll keep adding as things shift. Ping me on <a href="https://x.com/BahuleyanX" target="_blank" rel="noopener noreferrer" class="inline-link">X</a> if you're curious about anything specific.</p>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="footer-social">
+            <a href="https://x.com/BahuleyanX" aria-label="X" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://github.com/Bahuleyandr" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+            <a href="https://steamcommunity.com/id/Bahuleyan" aria-label="Steam" target="_blank" rel="noopener noreferrer"><i class="fab fa-steam"></i></a>
+            <a href="https://discord.com/users/583896341629894656" aria-label="Discord" target="_blank" rel="noopener noreferrer"><i class="fab fa-discord"></i></a>
+            <a href="/feed.xml" aria-label="RSS / Atom feed"><i class="fas fa-rss"></i></a>
+        </div>
+        <p>&copy; <span id="year">2026</span> Bahuleyan &middot; Built with <i class="fas fa-heart" style="color: var(--primary);"></i> and too much caffeine</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
