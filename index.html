@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BAHULEYAN - A passionate gamer, builder, and tinkerer. Exploring vast digital worlds from MMORPGs to epic RPG quests, and shipping projects on GitHub.">
+    <meta name="keywords" content="Bahuleyan, gaming, RPG, MMORPG, Ghost of Tsushima, Witcher 3, Cyberpunk 2077, GitHub, projects">
+    <meta name="author" content="Bahuleyan">
+    <meta name="theme-color" content="#9f46e4">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="BAHULEYAN | Gaming &amp; Projects">
+    <meta property="og:description" content="Leveling up one game — and one line of code — at a time.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bahuleyan.com">
+    <meta property="og:image" content="logo.png">
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@BahuleyanX">
+    <meta name="twitter:creator" content="@BahuleyanX">
+    <meta name="twitter:title" content="BAHULEYAN | Gaming &amp; Projects">
+    <meta name="twitter:description" content="Leveling up one game — and one line of code — at a time.">
+    <meta name="twitter:image" content="logo.png">
+
+    <title>BAHULEYAN | Gaming &amp; Projects</title>
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <!-- Floating particles background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+        <a href="#" class="nav-brand" aria-label="Bahuleyan home">
+            <img src="favicon.png" alt="" class="nav-icon">
+            <span>BAHULEYAN</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#now">Now</a></li>
+            <li><a href="#games">Games</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="#connect">Connect</a></li>
+            <li><a href="#game-section">Play</a></li>
+        </ul>
+        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" role="banner">
+        <div class="hero-content">
+            <img src="logo.png" alt="BAHULEYAN Oni Mask Logo" class="hero-logo" loading="eager">
+            <h1 class="glitch" data-text="BAHULEYAN">BAHULEYAN</h1>
+            <p class="tagline" id="rotatingTagline">Leveling up one game at a time.</p>
+            <div class="hero-actions">
+                <a href="#about" class="btn btn-primary">
+                    <i class="fas fa-compass"></i>
+                    Explore
+                </a>
+                <a href="https://x.com/BahuleyanX" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-x-twitter"></i>
+                    Follow on X
+                </a>
+            </div>
+            <a href="#about" class="scroll-cta" aria-label="Scroll down to content">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- About -->
+        <section id="about" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-user-ninja"></i></span> About Me</h2>
+            <p>I'm a passionate gamer and builder exploring vast digital worlds — and building a few of my own. From MMORPGs to world-building, epic RPG quests to late-night coding, I'm always looking for the next challenge. This is my corner of the internet to share the journey.</p>
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="stat-value" data-count="12">0</span>
+                    <span class="stat-label">Years Gaming</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" data-count="3">0</span>
+                    <span class="stat-label">Favorite Genres</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" data-count="100" data-suffix="+">0</span>
+                    <span class="stat-label">Worlds Explored</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Now -->
+        <section id="now" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-satellite-dish"></i></span> Now</h2>
+            <p class="now-subtitle">What I'm up to right now <span class="now-updated">&middot; updated <span id="nowUpdated">April 2026</span></span></p>
+            <div class="now-grid">
+                <div class="now-card">
+                    <div class="now-icon"><i class="fas fa-gamepad"></i></div>
+                    <span class="now-label">Playing</span>
+                    <span class="now-value">Ghost of Tsushima (NG+)</span>
+                </div>
+                <div class="now-card">
+                    <div class="now-icon"><i class="fas fa-code"></i></div>
+                    <span class="now-label">Building</span>
+                    <span class="now-value">this very site</span>
+                </div>
+                <div class="now-card">
+                    <div class="now-icon"><i class="fas fa-book-open"></i></div>
+                    <span class="now-label">Reading</span>
+                    <span class="now-value">Project Hail Mary</span>
+                </div>
+                <div class="now-card">
+                    <div class="now-icon"><i class="fas fa-headphones"></i></div>
+                    <span class="now-label">Listening</span>
+                    <span class="now-value">lofi + game OSTs</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games -->
+        <section id="games" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-gamepad"></i></span> My Games</h2>
+            <div class="games-grid">
+                <div class="game-card" tabindex="0">
+                    <div class="card-glow"></div>
+                    <i class="fas fa-mask"></i>
+                    <h3>Ghost of Tsushima</h3>
+                    <p>Action-Adventure</p>
+                </div>
+                <div class="game-card" tabindex="0">
+                    <div class="card-glow"></div>
+                    <i class="fas fa-dragon"></i>
+                    <h3>The Witcher 3</h3>
+                    <p>Action RPG</p>
+                </div>
+                <div class="game-card" tabindex="0">
+                    <div class="card-glow"></div>
+                    <i class="fas fa-rocket"></i>
+                    <h3>Cyberpunk 2077</h3>
+                    <p>Open World RPG</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects (GitHub) -->
+        <section id="projects" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-code-branch"></i></span> Projects</h2>
+            <p>Things I'm building in the open. Live pulls from <a href="https://github.com/Bahuleyandr" target="_blank" rel="noopener noreferrer" class="inline-link">GitHub</a>.</p>
+            <div id="projectsGrid" class="projects-grid">
+                <!-- Skeleton loaders while GitHub API resolves -->
+                <div class="project-card skeleton" aria-hidden="true"></div>
+                <div class="project-card skeleton" aria-hidden="true"></div>
+                <div class="project-card skeleton" aria-hidden="true"></div>
+            </div>
+            <a href="https://github.com/Bahuleyandr" class="btn btn-ghost github-cta" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+                View all on GitHub
+            </a>
+        </section>
+
+        <!-- Journal Teaser -->
+        <section id="journal-teaser" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-feather"></i></span> Journal</h2>
+            <p>Longer musings — on games, code, and the in-between. Updated when the thought is worth writing.</p>
+            <div id="journalTeaser" class="journal-teaser-grid">
+                <div class="post-card skeleton" aria-hidden="true"></div>
+                <div class="post-card skeleton" aria-hidden="true"></div>
+            </div>
+            <a href="journal.html" class="btn btn-ghost journal-cta">
+                <i class="fas fa-book"></i>
+                Read the journal
+            </a>
+        </section>
+
+        <!-- Connect -->
+        <section id="connect" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-link"></i></span> Connect</h2>
+            <p>Find me across the digital realm:</p>
+            <div class="social-links">
+                <a href="https://x.com/BahuleyanX" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-x-twitter"></i>
+                    <span class="social-label">X</span>
+                </a>
+                <a href="https://github.com/Bahuleyandr" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i>
+                    <span class="social-label">GitHub</span>
+                </a>
+                <a href="https://steamcommunity.com/id/Bahuleyan" aria-label="Steam" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-steam"></i>
+                    <span class="social-label">Steam</span>
+                </a>
+                <a href="https://discord.gg/U4tZw4UBQv" aria-label="Discord" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-discord"></i>
+                    <span class="social-label">Discord</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Snake Game -->
+        <section id="game-section" class="content-section reveal">
+            <h2><span class="section-icon"><i class="fas fa-dice"></i></span> Fancy a Game?</h2>
+            <p class="game-instructions">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> to move the snake.</p>
+            <div class="game-wrapper">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div class="game-overlay" id="gameOverlay">
+                    <p class="overlay-text">Press Start to Play</p>
+                </div>
+            </div>
+            <div class="game-info">
+                <div class="score-display">
+                    <span class="score-label">Score</span>
+                    <span class="score-value" id="score">0</span>
+                </div>
+                <button id="gameButton" aria-label="Start the snake game">Start Game</button>
+                <div class="score-display">
+                    <span class="score-label">Best</span>
+                    <span class="score-value" id="highScore">0</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="footer-social">
+            <a href="https://x.com/BahuleyanX" aria-label="X" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://github.com/Bahuleyandr" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+            <a href="https://steamcommunity.com/id/Bahuleyan" aria-label="Steam" target="_blank" rel="noopener noreferrer"><i class="fab fa-steam"></i></a>
+            <a href="https://discord.gg/U4tZw4UBQv" aria-label="Discord" target="_blank" rel="noopener noreferrer"><i class="fab fa-discord"></i></a>
+        </div>
+        <p>&copy; <span id="year">2026</span> Bahuleyan &middot; Built with <i class="fas fa-heart" style="color: var(--primary);"></i> and too much caffeine</p>
+    </footer>
+
+    <!-- Markdown parser for journal teaser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+    <script src="script.js"></script>
+    <script src="journal.js"></script>
+</body>
+</html>

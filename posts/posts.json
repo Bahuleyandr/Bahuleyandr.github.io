@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "slug": "welcome-to-the-journal",
+      "title": "Welcome to the Journal",
+      "date": "2026-04-17",
+      "excerpt": "First entry — what this space is for, and what you can expect.",
+      "tags": ["meta", "intro"],
+      "file": "2026-04-17-welcome.md"
+    },
+    {
+      "slug": "ghost-of-tsushima-thoughts",
+      "title": "Why Ghost of Tsushima Still Lives in My Head",
+      "date": "2026-04-10",
+      "excerpt": "On wind-guided paths, the quiet duel, and why this game redefined atmosphere for me.",
+      "tags": ["gaming", "musings"],
+      "file": "2026-04-10-ghost-of-tsushima.md"
+    }
+  ]
+}
