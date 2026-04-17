@@ -290,10 +290,9 @@
 
     <!-- Markdown parser for journal teaser -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
-    <!-- Arcade: set the Cloudflare Worker URL below to enable the global leaderboard.
-         Leave unset to use local-only leaderboards. -->
+    <!-- Arcade global leaderboard (Cloudflare Worker + KV) -->
     <script>
-        // window.ARCADE_API = 'https://bahuleyan-arcade-leaderboard.<your-subdomain>.workers.dev';
+        window.ARCADE_API = 'https://bahuleyan-arcade-leaderboard.bahuleyans.workers.dev';
     </script>
     <script src="script.js"></script>
     <script src="arcade.js"></script>
