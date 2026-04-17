@@ -216,26 +216,53 @@
             </div>
         </section>
 
-        <!-- Snake Game -->
+        <!-- Arcade -->
         <section id="game-section" class="content-section reveal">
-            <h2><span class="section-icon"><i class="fas fa-dice"></i></span> Fancy a Game?</h2>
-            <p class="game-instructions">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> to move the snake.</p>
-            <div class="game-wrapper">
-                <canvas id="gameCanvas" width="400" height="400"></canvas>
-                <div class="game-overlay" id="gameOverlay">
-                    <p class="overlay-text">Press Start to Play</p>
-                </div>
+            <h2><span class="section-icon"><i class="fas fa-dice"></i></span> Arcade</h2>
+            <p class="game-instructions">Pick a game. Beat your own best — top 10 scores are saved in your browser.</p>
+
+            <div class="arcade-tabs" role="tablist">
+                <button class="arcade-tab active" data-game="snake" role="tab" aria-selected="true">
+                    <i class="fas fa-worm"></i> <span>Snake</span>
+                </button>
+                <button class="arcade-tab" data-game="breakout" role="tab" aria-selected="false">
+                    <i class="fas fa-cubes"></i> <span>Breakout</span>
+                </button>
+                <button class="arcade-tab" data-game="2048" role="tab" aria-selected="false">
+                    <i class="fas fa-th"></i> <span>2048</span>
+                </button>
             </div>
-            <div class="game-info">
-                <div class="score-display">
-                    <span class="score-label">Score</span>
-                    <span class="score-value" id="score">0</span>
+
+            <div class="arcade-layout">
+                <div class="arcade-main">
+                    <div class="game-wrapper">
+                        <canvas id="gameCanvas" width="400" height="400"></canvas>
+                        <div id="gameDom" class="game-dom" hidden></div>
+                        <div class="game-overlay" id="gameOverlay">
+                            <p class="overlay-text">Press Start to Play</p>
+                        </div>
+                    </div>
+                    <div class="game-info">
+                        <div class="score-display">
+                            <span class="score-label">Score</span>
+                            <span class="score-value" id="score">0</span>
+                        </div>
+                        <button id="gameButton" aria-label="Start game">Start Game</button>
+                        <div class="score-display">
+                            <span class="score-label">Best</span>
+                            <span class="score-value" id="highScore">0</span>
+                        </div>
+                    </div>
+                    <p class="game-hint" id="gameHint">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to move.</p>
                 </div>
-                <button id="gameButton" aria-label="Start the snake game">Start Game</button>
-                <div class="score-display">
-                    <span class="score-label">Best</span>
-                    <span class="score-value" id="highScore">0</span>
-                </div>
+
+                <aside class="arcade-leaderboard" aria-label="Local leaderboard">
+                    <h3><i class="fas fa-trophy"></i> Top 10</h3>
+                    <ol id="leaderboardList" class="leaderboard-list">
+                        <li class="leaderboard-empty">No scores yet — play a round.</li>
+                    </ol>
+                    <p class="leaderboard-note">Saved in your browser only.</p>
+                </aside>
             </div>
         </section>
     </main>
@@ -253,6 +280,7 @@
     <!-- Markdown parser for journal teaser -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
     <script src="script.js"></script>
+    <script src="arcade.js"></script>
     <script src="journal.js"></script>
 </body>
 </html>

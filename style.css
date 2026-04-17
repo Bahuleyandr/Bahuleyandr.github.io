@@ -3,14 +3,24 @@
    =================================== */
 
 /* --- Custom Properties --- */
+@property --primary-hue {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 270;
+}
+
 :root {
-    --primary: #9f46e4;
-    --primary-glow: rgba(159, 70, 228, 0.4);
-    --primary-dim: rgba(159, 70, 228, 0.15);
-    --accent: #c084fc;
+    --primary-hue: 270;
+    --primary-sat: 75%;
+
+    --primary: hsl(var(--primary-hue), var(--primary-sat), 58%);
+    --primary-glow: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.4);
+    --primary-dim: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.15);
+    --accent: hsl(var(--primary-hue), 85%, 75%);
+    --card-border: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.2);
+
     --dark-bg: #0a0a0f;
     --card-bg: rgba(22, 22, 35, 0.85);
-    --card-border: rgba(159, 70, 228, 0.2);
     --text-color: #e0e0e0;
     --text-secondary: #8a8a9a;
     --text-bright: #ffffff;
@@ -18,6 +28,18 @@
     --success: #22c55e;
     --radius: 12px;
     --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    animation: hueShift 120s linear infinite;
+}
+
+@keyframes hueShift {
+    0%   { --primary-hue: 270; } /* violet */
+    20%  { --primary-hue: 330; } /* magenta/rose */
+    40%  { --primary-hue: 10;  } /* crimson */
+    55%  { --primary-hue: 35;  } /* saffron */
+    70%  { --primary-hue: 160; } /* emerald */
+    85%  { --primary-hue: 195; } /* cyan */
+    100% { --primary-hue: 270; } /* back to violet */
 }
 
 *, *::before, *::after {
@@ -187,7 +209,7 @@ body::before {
     align-items: center;
     text-align: center;
     color: var(--text-bright);
-    background: radial-gradient(ellipse at center bottom, rgba(159, 70, 228, 0.08) 0%, transparent 60%);
+    background: radial-gradient(ellipse at center bottom, hsla(var(--primary-hue), var(--primary-sat), 58%, 0.08) 0%, transparent 60%);
 }
 
 .hero-content {
@@ -205,7 +227,7 @@ body::before {
     border-radius: 50%;
     border: 2px solid var(--primary-glow);
     padding: 8px;
-    background: rgba(159, 70, 228, 0.05);
+    background: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.05);
     animation: floatLogo 4s ease-in-out infinite, fadeInUp 1s ease-out;
     box-shadow: 0 0 30px var(--primary-glow);
 }
@@ -219,7 +241,7 @@ body::before {
     animation: fadeInUp 1s ease-out 0.2s both;
     text-shadow:
         0 0 10px var(--primary-glow),
-        0 0 40px rgba(159, 70, 228, 0.2);
+        0 0 40px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.2);
 }
 
 .glitch::before,
@@ -284,12 +306,12 @@ body::before {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), #7c37b3);
     color: var(--text-bright);
-    box-shadow: 0 4px 15px rgba(159, 70, 228, 0.3);
+    box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(159, 70, 228, 0.5);
+    box-shadow: 0 6px 25px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.5);
 }
 
 .btn-ghost {
@@ -333,8 +355,8 @@ main { position: relative; z-index: 1; }
 }
 
 .content-section:hover {
-    border-color: rgba(159, 70, 228, 0.35);
-    box-shadow: 0 8px 40px rgba(159, 70, 228, 0.08);
+    border-color: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.35);
+    box-shadow: 0 8px 40px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.08);
 }
 
 .reveal {
@@ -442,7 +464,7 @@ h2 {
 
 .game-card:hover {
     transform: translateY(-8px);
-    border-color: rgba(159, 70, 228, 0.5);
+    border-color: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.5);
     box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.4),
         0 0 20px var(--primary-dim);
@@ -502,7 +524,7 @@ h2 {
 
 .project-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(159, 70, 228, 0.5);
+    border-color: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.5);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), 0 0 18px var(--primary-dim);
 }
 
@@ -618,7 +640,7 @@ h2 {
 
 kbd {
     display: inline-block;
-    background: rgba(159, 70, 228, 0.15);
+    background: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.15);
     border: 1px solid var(--card-border);
     border-radius: 4px;
     padding: 2px 8px;
@@ -717,12 +739,12 @@ kbd {
     letter-spacing: 1px;
     text-transform: uppercase;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(159, 70, 228, 0.3);
+    box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.3);
 }
 
 #gameButton:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(159, 70, 228, 0.5);
+    box-shadow: 0 6px 25px hsla(var(--primary-hue), var(--primary-sat), 58%, 0.5);
 }
 
 #gameButton:active { transform: translateY(0); }
@@ -851,6 +873,10 @@ footer {
     }
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; }
+    :root {
+        animation: none !important;
+        --primary-hue: 270;
+    }
 }
 
 /* =========================== NOW =========================== */
@@ -897,7 +923,7 @@ footer {
 
 .now-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(159, 70, 228, 0.45);
+    border-color: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.45);
 }
 
 .now-card:hover::before { opacity: 1; }
@@ -965,7 +991,7 @@ footer {
 
 .post-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(159, 70, 228, 0.5);
+    border-color: hsla(var(--primary-hue), var(--primary-sat), 58%, 0.5);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), 0 0 18px var(--primary-dim);
 }
 
@@ -1300,4 +1326,231 @@ footer {
 
 @media (max-width: 400px) {
     .now-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================== ARCADE =========================== */
+.arcade-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0 1.5rem;
+    flex-wrap: wrap;
+}
+
+.arcade-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.arcade-tab:hover {
+    color: var(--accent);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.arcade-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-bright);
+    box-shadow: 0 0 20px var(--primary-dim);
+}
+
+.arcade-tab i { font-size: 0.9rem; }
+
+.arcade-layout {
+    display: grid;
+    grid-template-columns: auto 220px;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: start;
+}
+
+.arcade-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.game-hint {
+    color: var(--text-secondary);
+    font-size: 0.85rem !important;
+    text-align: center;
+    margin: 0 !important;
+    max-width: none !important;
+}
+
+.game-hint kbd { margin: 0 2px; }
+
+.arcade-leaderboard {
+    background: linear-gradient(145deg, rgba(30, 30, 50, 0.8), rgba(15, 15, 25, 0.8));
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1rem;
+    text-align: left;
+}
+
+.arcade-leaderboard h3 {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.arcade-leaderboard h3 i { color: var(--primary); }
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 260px;
+}
+
+.leaderboard-entry {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 6px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-color);
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.leaderboard-entry:hover {
+    background: var(--primary-dim);
+}
+
+.leaderboard-entry.is-top {
+    background: var(--primary-dim);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.lb-rank {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    text-align: right;
+}
+
+.leaderboard-entry.is-top .lb-rank { color: var(--primary); }
+
+.lb-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-score {
+    color: var(--accent);
+    font-weight: 600;
+    text-align: right;
+}
+
+.leaderboard-entry.is-top .lb-score { color: var(--text-bright); }
+
+.leaderboard-empty {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-style: italic;
+    padding: 1rem 0.5rem;
+    text-align: center;
+}
+
+.leaderboard-note {
+    font-size: 0.7rem !important;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    margin: 0.8rem 0 0 !important;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+/* -------------------- 2048 board -------------------- */
+.game-dom {
+    width: 400px;
+    height: 400px;
+    background: rgba(10, 10, 20, 0.95);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px;
+    transition: border-color var(--transition);
+}
+
+.game-wrapper:hover .game-dom {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-dim);
+}
+
+.g2048-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.g2048-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.g2048-tile.has-val {
+    animation: tilePop 0.2s ease-out;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes tilePop {
+    0% { transform: scale(0.8); }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* -------------------- Arcade responsive -------------------- */
+@media (max-width: 768px) {
+    .arcade-layout {
+        grid-template-columns: 1fr;
+    }
+    .arcade-leaderboard {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .leaderboard-list { min-height: auto; }
+    .arcade-tab span { display: none; }
+    .arcade-tab { padding: 10px 14px; }
+    .game-dom { width: min(400px, calc(100vw - 3rem)); height: min(400px, calc(100vw - 3rem)); }
+    #gameCanvas { width: min(400px, calc(100vw - 3rem)); height: auto; }
+    .g2048-tile { font-size: 1.2rem; }
 }

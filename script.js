@@ -2,6 +2,19 @@
    BAHULEYAN.COM - Merged Script
    =================================== */
 
+// ---- Theme Helper ----
+// Reads the animated --primary-hue custom property so canvas rendering
+// (particles, games) can stay in sync with the CSS hue-cycle animation.
+window.getThemeHue = function () {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--primary-hue');
+    const n = parseFloat(raw);
+    return Number.isFinite(n) ? n : 270;
+};
+window.themeColor = function (lightness = 58, alpha = 1) {
+    return `hsla(${window.getThemeHue()}, 75%, ${lightness}%, ${alpha})`;
+};
+
+
 // ---- Particle Background System ----
 (function initParticles() {
     const canvas = document.getElementById('particleCanvas');
@@ -35,11 +48,11 @@
                 this.reset();
             }
         }
-        draw() {
+        draw(hue) {
             const alpha = this.opacity + Math.sin(this.pulse) * 0.15;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(159, 70, 228, ${Math.max(0, alpha)})`;
+            ctx.fillStyle = `hsla(${hue}, 75%, 58%, ${Math.max(0, alpha)})`;
             ctx.fill();
         }
     }
@@ -47,7 +60,7 @@
     const count = window.innerWidth < 768 ? 40 : 80;
     for (let i = 0; i < count; i++) particles.push(new Particle());
 
-    function drawConnections() {
+    function drawConnections(hue) {
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
@@ -57,7 +70,7 @@
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(159, 70, 228, ${0.06 * (1 - dist / 120)})`;
+                    ctx.strokeStyle = `hsla(${hue}, 75%, 58%, ${0.06 * (1 - dist / 120)})`;
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
@@ -66,9 +79,10 @@
     }
 
     function animate() {
+        const hue = window.getThemeHue();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        drawConnections();
+        particles.forEach(p => { p.update(); p.draw(hue); });
+        drawConnections(hue);
         requestAnimationFrame(animate);
     }
     animate();
@@ -270,268 +284,3 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 })();
 
-
-// ---- Snake Game (Enhanced) ----
-(function initSnakeGame() {
-    const canvas = document.getElementById('gameCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score');
-    const highScoreEl = document.getElementById('highScore');
-    const gameButton = document.getElementById('gameButton');
-    const overlay = document.getElementById('gameOverlay');
-    const overlayText = overlay ? overlay.querySelector('.overlay-text') : null;
-
-    const gridSize = 20;
-    const tileCount = canvas.width / gridSize;
-
-    let snake = [];
-    let food = {};
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
-    let highScore = 0;
-    let gameLoop = null;
-    let gameRunning = false;
-    let speed = 120;
-    let foodParticles = [];
-
-    // Restore high score from localStorage
-    try {
-        const saved = localStorage.getItem('bahuleyan_snake_hiscore');
-        if (saved) {
-            highScore = parseInt(saved, 10) || 0;
-            if (highScoreEl) highScoreEl.textContent = highScore;
-        }
-    } catch (_) { /* ignore */ }
-
-    class FoodParticle {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.vx = (Math.random() - 0.5) * 6;
-            this.vy = (Math.random() - 0.5) * 6;
-            this.life = 1;
-            this.size = Math.random() * 3 + 1;
-        }
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.life -= 0.04;
-            this.vx *= 0.97;
-            this.vy *= 0.97;
-        }
-        draw() {
-            if (this.life <= 0) return;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(159, 70, 228, ${this.life})`;
-            ctx.fill();
-        }
-    }
-
-    function spawnFoodParticles(x, y) {
-        for (let i = 0; i < 12; i++) {
-            foodParticles.push(new FoodParticle(
-                x * gridSize + gridSize / 2,
-                y * gridSize + gridSize / 2
-            ));
-        }
-    }
-
-    function resetGame() {
-        const mid = Math.floor(tileCount / 2);
-        snake = [
-            { x: mid, y: mid },
-            { x: mid - 1, y: mid },
-            { x: mid - 2, y: mid }
-        ];
-        dx = 1;
-        dy = 0;
-        score = 0;
-        speed = 120;
-        foodParticles = [];
-        updateScore();
-        placeFood();
-    }
-
-    function placeFood() {
-        let valid = false;
-        while (!valid) {
-            food = {
-                x: Math.floor(Math.random() * tileCount),
-                y: Math.floor(Math.random() * tileCount)
-            };
-            valid = !snake.some(seg => seg.x === food.x && seg.y === food.y);
-        }
-    }
-
-    function updateScore() {
-        if (scoreEl) scoreEl.textContent = score;
-    }
-
-    function drawGame() {
-        ctx.fillStyle = 'rgba(10, 10, 20, 0.95)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = 'rgba(159, 70, 228, 0.03)';
-        ctx.lineWidth = 0.5;
-        for (let i = 0; i < tileCount; i++) {
-            ctx.beginPath();
-            ctx.moveTo(i * gridSize, 0);
-            ctx.lineTo(i * gridSize, canvas.height);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(0, i * gridSize);
-            ctx.lineTo(canvas.width, i * gridSize);
-            ctx.stroke();
-        }
-
-        foodParticles = foodParticles.filter(p => p.life > 0);
-        foodParticles.forEach(p => { p.update(); p.draw(); });
-
-        const foodCenterX = food.x * gridSize + gridSize / 2;
-        const foodCenterY = food.y * gridSize + gridSize / 2;
-
-        const glow = ctx.createRadialGradient(foodCenterX, foodCenterY, 0, foodCenterX, foodCenterY, gridSize);
-        glow.addColorStop(0, 'rgba(239, 68, 68, 0.4)');
-        glow.addColorStop(1, 'transparent');
-        ctx.fillStyle = glow;
-        ctx.fillRect(food.x * gridSize - gridSize / 2, food.y * gridSize - gridSize / 2, gridSize * 2, gridSize * 2);
-
-        ctx.beginPath();
-        ctx.arc(foodCenterX, foodCenterY, gridSize / 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#ef4444';
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        snake.forEach((segment, index) => {
-            const ratio = 1 - (index / snake.length) * 0.6;
-            const r = Math.round(159 * ratio);
-            const g = Math.round(70 * ratio);
-            const b = Math.round(228 * ratio);
-            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-
-            const padding = index === 0 ? 1 : 2;
-            const radius = index === 0 ? 5 : 3;
-            const sx = segment.x * gridSize + padding;
-            const sy = segment.y * gridSize + padding;
-            const sw = gridSize - padding * 2;
-            const sh = gridSize - padding * 2;
-
-            ctx.beginPath();
-            ctx.moveTo(sx + radius, sy);
-            ctx.arcTo(sx + sw, sy, sx + sw, sy + sh, radius);
-            ctx.arcTo(sx + sw, sy + sh, sx, sy + sh, radius);
-            ctx.arcTo(sx, sy + sh, sx, sy, radius);
-            ctx.arcTo(sx, sy, sx + sw, sy, radius);
-            ctx.closePath();
-            ctx.fill();
-
-            if (index === 0) {
-                ctx.shadowColor = 'rgba(159, 70, 228, 0.5)';
-                ctx.shadowBlur = 10;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        });
-    }
-
-    function moveSnake() {
-        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-
-        if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-            return gameOver();
-        }
-        if (snake.some(seg => seg.x === head.x && seg.y === head.y)) {
-            return gameOver();
-        }
-
-        snake.unshift(head);
-
-        if (head.x === food.x && head.y === food.y) {
-            score += 10;
-            updateScore();
-            spawnFoodParticles(food.x, food.y);
-            placeFood();
-            if (speed > 60) speed -= 2;
-        } else {
-            snake.pop();
-        }
-    }
-
-    function gameOver() {
-        gameRunning = false;
-        clearInterval(gameLoop);
-        gameLoop = null;
-
-        if (score > highScore) {
-            highScore = score;
-            if (highScoreEl) highScoreEl.textContent = highScore;
-            try { localStorage.setItem('bahuleyan_snake_hiscore', highScore); } catch (_) {}
-        }
-
-        if (gameButton) gameButton.textContent = 'Play Again';
-
-        if (overlay && overlayText) {
-            overlayText.textContent = `Game Over! Score: ${score}`;
-            overlay.classList.remove('hidden');
-        }
-    }
-
-    function tick() {
-        moveSnake();
-        if (gameRunning) drawGame();
-    }
-
-    function startGame() {
-        if (gameRunning) return;
-        resetGame();
-        gameRunning = true;
-
-        if (overlay) overlay.classList.add('hidden');
-        if (gameButton) gameButton.textContent = 'Restart';
-
-        drawGame();
-        gameLoop = setInterval(tick, speed);
-    }
-
-    function restartGame() {
-        clearInterval(gameLoop);
-        gameLoop = null;
-        gameRunning = false;
-        startGame();
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (!gameRunning) return;
-        switch (e.key) {
-            case 'ArrowUp': case 'w': case 'W':
-                if (dy !== 1) { dx = 0; dy = -1; }
-                e.preventDefault();
-                break;
-            case 'ArrowDown': case 's': case 'S':
-                if (dy !== -1) { dx = 0; dy = 1; }
-                e.preventDefault();
-                break;
-            case 'ArrowLeft': case 'a': case 'A':
-                if (dx !== 1) { dx = -1; dy = 0; }
-                e.preventDefault();
-                break;
-            case 'ArrowRight': case 'd': case 'D':
-                if (dx !== -1) { dx = 1; dy = 0; }
-                e.preventDefault();
-                break;
-        }
-    });
-
-    if (gameButton) {
-        gameButton.addEventListener('click', () => {
-            if (gameRunning) restartGame();
-            else startGame();
-        });
-    }
-
-    resetGame();
-    drawGame();
-})();

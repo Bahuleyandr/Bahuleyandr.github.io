@@ -23,8 +23,9 @@ Personal static site for Bahuleyan — gaming-themed homepage, GitHub-linked pro
 ├── index.html          Homepage
 ├── journal.html        Journal (list view + single-post view via ?post=slug)
 ├── style.css           All styles (shared across both pages)
-├── script.js           Shared JS: particles, nav, reveal, stats counter,
-│                       snake game, GitHub repo fetch, rotating tagline, year
+├── script.js           Shared JS: theme helper, particles, nav, reveal,
+│                       stats counter, GitHub fetch, rotating tagline, year
+├── arcade.js           Arcade: Snake / Breakout / 2048 + localStorage top-10
 ├── journal.js          Journal-only: manifest fetch, list render, tag filter,
 │                       single-post render, home-page teaser
 ├── posts/
@@ -77,6 +78,19 @@ The username is hardcoded at `script.js` top of the `initGitHubProjects` IIFE (`
 ### Change the rotating taglines
 
 Edit the `taglines` array inside `initTagline` in `script.js`.
+
+### Arcade
+
+- Games: Snake, Breakout, 2048 — all in `arcade.js` as self-contained IIFE modules with `enter()` / `stop()` / `start()` / `restart()` methods.
+- Canvas-based (Snake, Breakout) share `#gameCanvas`; 2048 renders into `#gameDom`.
+- Leaderboard is localStorage-only (`bahuleyan_arcade_<game>` keys) — top 10 per game, stored as `[{name, score, date}]`. Not a global leaderboard; pitched honestly in the UI.
+- To add a fourth game: write a module with `enter / stop / start / restart`, add to the `GAMES` map and add a tab in `index.html`. If it uses the canvas, call `showCanvas()`; if DOM-based, `showDom()`. Call `tryRecordScore(gameId, score)` on game over.
+
+### Theme color cycling
+
+All color uses HSL derived from `--primary-hue`, which a CSS animation cycles over 120s (violet → magenta → crimson → saffron → emerald → cyan → back). Canvas code reads `window.getThemeHue()` each frame to stay in sync. Disabled under `prefers-reduced-motion: reduce` (locks to hue 270).
+
+To change the palette: edit the `@keyframes hueShift` stops in `style.css`. To pin one color: remove the `animation: hueShift ...` line and set `--primary-hue` to a fixed value.
 
 ### Local preview
 
