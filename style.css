@@ -778,6 +778,10 @@ footer {
 
 .footer-social a:hover { color: var(--primary); transform: translateY(-2px); }
 
+/* Heart icon in footer copyright line — class instead of inline style
+   so we can ban inline styles via CSP without losing the cycling color. */
+.heart-icon { color: var(--primary); }
+
 /* =========================== ANIMATIONS =========================== */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
@@ -1666,7 +1670,25 @@ footer {
 .g2048-tile.has-val {
     animation: tilePop 0.2s ease-out;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    background: hsl(var(--primary-hue), 75%, var(--tile-l, 75%));
+    color: var(--tile-fg, #fff);
 }
+
+/* Tile background lightness scales with the value (smaller=lighter,
+   bigger=darker, foreground flips when bg gets dark). The data-step
+   attribute is computed in arcade.js as Math.min(11, log2(value)).
+   Avoids inline style attributes — keeps CSP style-src strict. */
+.g2048-tile[data-step="1"]  { --tile-l: 71%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="2"]  { --tile-l: 67%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="3"]  { --tile-l: 63%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="4"]  { --tile-l: 59%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="5"]  { --tile-l: 55%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="6"]  { --tile-l: 51%; --tile-fg: #0a0a0f; }
+.g2048-tile[data-step="7"]  { --tile-l: 47%; --tile-fg: #fff; }
+.g2048-tile[data-step="8"]  { --tile-l: 43%; --tile-fg: #fff; }
+.g2048-tile[data-step="9"]  { --tile-l: 39%; --tile-fg: #fff; }
+.g2048-tile[data-step="10"] { --tile-l: 35%; --tile-fg: #fff; }
+.g2048-tile[data-step="11"] { --tile-l: 31%; --tile-fg: #fff; }
 
 @keyframes tilePop {
     0% { transform: scale(0.8); }

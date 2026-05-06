@@ -592,19 +592,20 @@
                 }
             return true;
         }
-        function tileStyle(v) {
+        // Step 0..11 mapped from log2(value); colors come from CSS rules
+        // keyed on [data-step]. No inline style attribute → CSP-safe.
+        function tileStep(v) {
             if (!v) return '';
-            const step = Math.min(11, Math.log2(v));
-            const l = 75 - step * 4;
-            return `background: hsl(${hue()}, 75%, ${l}%); color: ${l > 50 ? '#0a0a0f' : '#fff'};`;
+            return Math.min(11, Math.floor(Math.log2(v)));
         }
         function render() {
             if (!gameDom) return;
             gameDom.innerHTML = `
                 <div class="g2048-board">
-                    ${grid.map(row => row.map(v => `
-                        <div class="g2048-tile${v ? ' has-val' : ''}" style="${tileStyle(v)}">${v || ''}</div>
-                    `).join('')).join('')}
+                    ${grid.map(row => row.map(v => {
+                        if (!v) return '<div class="g2048-tile"></div>';
+                        return `<div class="g2048-tile has-val" data-step="${tileStep(v)}">${v}</div>`;
+                    }).join('')).join('')}
                 </div>
             `;
         }
