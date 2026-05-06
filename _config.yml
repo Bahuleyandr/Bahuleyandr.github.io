@@ -1,0 +1,30 @@
+# GitHub Pages Jekyll config.
+#
+# We don't actually use Jekyll for content — every page is hand-written
+# HTML with no Liquid templating. This config exists for one reason:
+# to keep internal files OUT of the deployed site.
+#
+# Anything listed in `exclude` here is in the source repo (visible on
+# GitHub) but is NOT copied into the public _site output served by
+# Pages. So `https://bahuleyan.com/CLAUDE.md` returns 404, even though
+# the file is in the repo at HEAD.
+#
+# Do NOT add CSS/JS/HTML/asset files here unless you really mean to
+# stop serving them. The big risks: marked/purify in vendor/, anything
+# under posts/, anything fetched at runtime.
+
+exclude:
+  # Internal documentation — we don't want these on the live site
+  - CLAUDE.md
+  - claude-design-brief.md
+  # Build scripts — GHA runs these from source, no need to serve
+  - scripts/
+  # Repo housekeeping
+  - .gitignore
+  - .gitattributes
+  - .github/
+
+# Jekyll excludes dotfile dirs by default. We need .well-known/ served
+# so security.txt is reachable.
+include:
+  - .well-known

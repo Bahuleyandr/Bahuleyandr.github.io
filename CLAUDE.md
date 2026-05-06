@@ -183,6 +183,15 @@ What's done:
   researchers (RFC 9116).
 - **Discoverability:** `robots.txt` and `sitemap.xml` are at the root.
   Sitemap is regenerated alongside `feed.xml` by the build-feed workflow.
+- **Internal-doc exposure:** `_config.yml` lists `CLAUDE.md`,
+  `claude-design-brief.md`, `scripts/`, and a few dotfiles in `exclude:`,
+  so they are NOT copied into the deployed site. They remain in the repo
+  on GitHub (the repo is public) but `https://bahuleyan.com/CLAUDE.md`
+  returns 404. Reduces recon surface for an attacker.
+- **Worker headers:** the Cloudflare Worker at
+  `*.workers.dev` adds its own HSTS / X-Frame / X-Content-Type-Options /
+  Referrer-Policy / Permissions-Policy on every response — that domain
+  isn't covered by the Cloudflare Transform Rule (different zone).
 
 What's NOT done (deliberately or yet to do):
 
