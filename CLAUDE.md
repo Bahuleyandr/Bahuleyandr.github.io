@@ -193,18 +193,32 @@ What's done:
   Referrer-Policy / Permissions-Policy on every response — that domain
   isn't covered by the Cloudflare Transform Rule (different zone).
 
+- **Security headers** — set via Cloudflare Response Header Transform
+  Rule on both zones (`bahuleyan.com` and `bahulyean.com`). Six headers
+  total: HSTS (1y, includeSubDomains), X-Content-Type-Options, X-Frame-Options
+  (DENY), Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy
+  (camera/mic/geo all denied), and Content-Security-Policy. The rule also
+  has a Remove action stripping the lax `Access-Control-Allow-Origin: *`
+  that GitHub Pages adds at origin.
+- **CSP** — strict on everything except `script-src 'self' 'unsafe-inline'`.
+  The `'unsafe-inline'` is required because Cloudflare's Bot Fight Mode
+  injects a per-request inline JSD (JavaScript Detection) script with
+  rotating tokens — neither hash- nor nonce-based CSP can pin it on the
+  free plan. The cost is acceptable: every other directive is strict,
+  and DOMPurify already handles the main XSS vector. To go fully strict
+  on script-src, disable Bot Fight Mode and remove `'unsafe-inline'`.
+- **Refactors that enabled strict-ish CSP:**
+  - `window.ARCADE_API` is now in `arcade-config.js`, not inline in `index.html`
+  - The footer heart icon uses a `.heart-icon` class, not inline `style=""`
+  - The 2048 game uses `data-step="N"` attributes mapped to CSS rules,
+    not dynamically-generated inline `style="background:..."`
+
 What's NOT done (deliberately or yet to do):
 
-- **Security headers (HSTS, X-Frame-Options, etc.)** — GitHub Pages doesn't
-  let us set custom response headers. The clean fix is a Cloudflare
-  Transform Rule (`Modify Response Header`, available on the Free plan,
-  10-rule limit). Add at minimum: `Strict-Transport-Security`,
-  `X-Content-Type-Options: nosniff`, `Referrer-Policy:
-  strict-origin-when-cross-origin`, `Permissions-Policy: camera=(),
-  microphone=(), geolocation=()`, `X-Frame-Options: DENY`.
-- **CSP (Content-Security-Policy)** — needs careful testing because of
-  Font Awesome's font fetching from cdnjs and the GitHub API call from
-  `script.js`. Add later in `Content-Security-Policy-Report-Only` first.
+- **HSTS preload** — once the current `max-age=31536000; includeSubDomains`
+  has been live for a few weeks with no issues, add `preload` and submit
+  the domain to https://hstspreload.org. This is a near-irreversible
+  commitment, so don't rush it.
 - **Full FA self-host** — Font Awesome is still loaded from cdnjs (with
   SRI). Going fully local would require shipping the CSS plus all the
   woff2 font files (~650 KB). Worth it only if SRI ever proves insufficient.
