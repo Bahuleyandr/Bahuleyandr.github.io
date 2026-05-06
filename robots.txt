@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Don't crawl the design brief or the security disclosure file directly.
+Disallow: /claude-design-brief.md
+Disallow: /.well-known/security.txt
+
+Sitemap: https://bahuleyan.com/sitemap.xml

@@ -1,7 +1,7 @@
-name: Regenerate Atom feed
+name: Regenerate Atom feed and sitemap
 
 # Runs whenever posts change (or the feed builder itself changes).
-# Regenerates feed.xml and commits it back if it changed.
+# Regenerates feed.xml + sitemap.xml and commits them back if they changed.
 # Skips when the commit was made by the bot itself (loop safety).
 
 on:
@@ -29,17 +29,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate feed.xml
+      - name: Generate feed.xml + sitemap.xml
         run: node scripts/build-feed.mjs
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [[ -n "$(git status --porcelain feed.xml)" ]]; then
-            git add feed.xml
-            git commit -m "chore: regenerate feed.xml [skip feed]"
+          if [[ -n "$(git status --porcelain feed.xml sitemap.xml)" ]]; then
+            git add feed.xml sitemap.xml
+            git commit -m "chore: regenerate feed.xml and sitemap.xml [skip feed]"
             git push
           else
-            echo "feed.xml unchanged — nothing to commit"
+            echo "feed.xml and sitemap.xml unchanged — nothing to commit"
           fi

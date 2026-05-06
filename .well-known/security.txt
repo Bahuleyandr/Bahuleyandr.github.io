@@ -1,0 +1,8 @@
+# If you found a security issue with this site or any of its services,
+# please get in touch using one of the contacts below. Thanks for the help.
+
+Contact: mailto:security@bahuleyan.com
+Contact: https://x.com/BahuleyanX
+Expires: 2027-05-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://bahuleyan.com/.well-known/security.txt

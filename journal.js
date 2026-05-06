@@ -107,7 +107,9 @@
         document.getElementById('postTags').innerHTML =
             (post.tags || []).map(t => `<span class="post-tag">#${esc(t)}</span>`).join('');
 
-        const html = window.marked ? window.marked.parse(markdown) : `<pre>${esc(markdown)}</pre>`;
+        const rawHtml = window.marked ? window.marked.parse(markdown) : `<pre>${esc(markdown)}</pre>`;
+        // Sanitize before injecting — defense-in-depth even though we control all post content.
+        const html = window.DOMPurify ? window.DOMPurify.sanitize(rawHtml) : rawHtml;
         document.getElementById('postBody').innerHTML = html;
 
         // Share link

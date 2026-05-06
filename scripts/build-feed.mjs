@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generate feed.xml (Atom) from posts/posts.json + the matching markdown bodies.
+ * Generate feed.xml (Atom) and sitemap.xml from posts/posts.json + the matching
+ * markdown bodies. Both files are regenerated together so they stay in sync.
  *
  * Run before each release (or wire up as a GitHub Action):
  *   node scripts/build-feed.mjs
@@ -68,7 +69,35 @@ ${entries}
 `;
 }
 
+function buildSitemap(posts) {
+    const today = new Date().toISOString().slice(0, 10);
+    const staticUrls = [
+        { loc: `${SITE_URL}/`,             changefreq: 'weekly',  priority: '1.0' },
+        { loc: `${SITE_URL}/journal.html`, changefreq: 'weekly',  priority: '0.8' },
+        { loc: `${SITE_URL}/uses.html`,    changefreq: 'monthly', priority: '0.6' }
+    ];
+
+    const staticBlock = staticUrls.map(u =>
+        `  <url>\n    <loc>${u.loc}</loc>\n    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+    ).join('\n');
+
+    const postBlock = posts.map(p =>
+        `  <url>\n    <loc>${SITE_URL}/journal.html?post=${encodeURIComponent(p.slug)}</loc>\n    <lastmod>${p.date}</lastmod>\n    <priority>0.5</priority>\n  </url>`
+    ).join('\n');
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticBlock}
+${postBlock}
+</urlset>
+`;
+}
+
 const posts = await loadPosts();
 const xml = buildAtom(posts);
 await writeFile(join(ROOT, 'feed.xml'), xml, 'utf8');
 console.log(`feed.xml written — ${posts.length} entries`);
+
+const sitemap = buildSitemap(posts);
+await writeFile(join(ROOT, 'sitemap.xml'), sitemap, 'utf8');
+console.log(`sitemap.xml written — ${posts.length + 3} URLs`);

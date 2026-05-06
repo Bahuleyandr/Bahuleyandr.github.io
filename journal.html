@@ -26,15 +26,20 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
     <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Atom feed -->
     <link rel="alternate" type="application/atom+xml" title="Bahuleyan — Journal" href="/feed.xml">
 
-    <!-- Markdown parser -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+    <!-- Markdown parser + sanitizer (self-hosted, no CDN) -->
+    <script src="vendor/marked.min.js"></script>
+    <script src="vendor/purify.min.js"></script>
 </head>
 <body class="journal-body">
     <canvas id="particleCanvas"></canvas>
